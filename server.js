@@ -10,26 +10,13 @@ async function startServer() {
   const app = express();
   const port = 3000;
 
-  // API routes can be added here
+  // API routes
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Games Hub Server is running' });
   });
 
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    // Serve static files in production
-    const distPath = path.join(__dirname, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
+  // Serve static files from root
+  app.use(express.static(__dirname));
 
   app.listen(port, '0.0.0.0', () => {
     console.log(`Server running at http://localhost:${port}`);
